@@ -3,13 +3,13 @@ Contact Info
 
 Group Members & Email Addresses:
 
-    Person 1, person1@uky.edu
-    Person 2, person2@uky.edu
+    Tharanie Subramaniam, tsu241@uky.edu
+    Joshna Sravanthi Kurra, jku230@uky.edu
 
 Versioning
 ==========
 
-Github Link: 
+Github Link: https://github.com/pryoxy/371PongProject.git
 
 General Info
 ============
