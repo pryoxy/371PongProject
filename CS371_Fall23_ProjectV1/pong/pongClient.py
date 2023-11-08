@@ -21,7 +21,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     # Pygame inits
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
-
+    #test
     # Constants
     WHITE = (255,255,255)
     clock = pygame.time.Clock()
