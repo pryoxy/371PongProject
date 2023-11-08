@@ -1,8 +1,8 @@
 # =================================================================================================
-# Contributing Authors:	    <Anyone who touched the code>
-# Email Addresses:          <Your uky.edu email addresses>
+# Contributing Authors:	    Joshna Sravanthi Kurra, Tharanie Subramaniam
+# Email Addresses:          jku230@uky.edu, tsu241@uky.edu
 # Date:                     <The date the file was last edited>
-# Purpose:                  <How this file contributes to the project>
+# Purpose:                  Acts as the server
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 

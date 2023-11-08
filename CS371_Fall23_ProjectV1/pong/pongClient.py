@@ -85,6 +85,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Feel free to change when the score is updated to suit your needs/requirements
         
         
+        
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
