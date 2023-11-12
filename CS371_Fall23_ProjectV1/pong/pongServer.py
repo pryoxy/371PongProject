@@ -9,6 +9,17 @@
 import socket
 import threading
 
+# creating the server 
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+# binding it to an address
+server.bind(("localhost", 12321))
+server.listen(2)
+
+# wait for a connection
+client_socket, client_address = server.accept
+
 # Use this file to write your server logic
 # You will need to support at least two clients
 # You will need to keep track of where on the screen (x,y coordinates) each paddle is, the score 

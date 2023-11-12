@@ -83,9 +83,11 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
+        # create the client
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(("localhost", 12321))
         
-        
-        
+        client.close()
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
