@@ -9,7 +9,7 @@
 import socket
 import threading
 
-def handle_client(client_socket):
+def handle_client(client_socket, counter):
     paddle_side = ""
     if(counter == 0):
         paddle_side = "left"
@@ -19,7 +19,6 @@ def handle_client(client_socket):
     client_socket.send(paddle_side.encode('utf-8'))
 
     client_socket.close()
-    counter += 1
 
 # creating the server 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,16 +29,12 @@ server.bind(("localhost", 12321))
 server.listen(2)
 
 counter = 0
-# wait for a connection
-client_socket, client_address = server.accept()
-#data = client_socket.recv(1024)
-
-# store the client game states
-
 # client handlers
 while True:
-    client_handler = threading.Thread(target=handle_client, args=(client_socket))
+    client_socket, client_address = server.accept()
+    client_handler = threading.Thread(target=handle_client, args=(client_socket, counter))
     client_handler.start()
+    counter += 1
 
 # Use this file to write your server logic
 # You will need to support at least two clients
