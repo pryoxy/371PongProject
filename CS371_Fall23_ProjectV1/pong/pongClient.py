@@ -5,7 +5,7 @@
 # Purpose:                  Acts as the Client
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
-#merge test
+
 import pygame
 import tkinter as tk
 import sys
@@ -179,7 +179,8 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # Create a socket and connect to the server
     # You don't have to use SOCK_STREAM, use what you think is best
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+    client.connect(("localhost", 12321))    
+    
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
 
 
@@ -225,7 +226,7 @@ def startScreen():
     app.mainloop()
 
 if __name__ == "__main__":
-    #startScreen()
+    startScreen()
     
     # Uncomment the line below if you want to play the game without a server to see how it should work
     # the startScreen() function should call playGame with the arguments given to it by the server this is
