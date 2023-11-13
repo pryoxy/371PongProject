@@ -1,8 +1,8 @@
 # =================================================================================================
-# Contributing Authors:	    <Anyone who touched the code>
-# Email Addresses:          <Your uky.edu email addresses>
+# Contributing Authors:	    Tharanie Subramaniam, Joshna Sravanthi Kurra
+# Email Addresses:          jku230@uky.edu, tsu241@uky.edu
 # Date:                     <The date the file was last edited>
-# Purpose:                  <How this file contributes to the project>
+# Purpose:                  Acts as the Client
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
@@ -21,7 +21,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     # Pygame inits
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
-    #test
+
     # Constants
     WHITE = (255,255,255)
     clock = pygame.time.Clock() 
@@ -83,8 +83,11 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
+        # create the client
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(("localhost", 12321))
         
-        
+        client.close()
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen

@@ -1,13 +1,24 @@
 # =================================================================================================
-# Contributing Authors:	    <Anyone who touched the code>
-# Email Addresses:          <Your uky.edu email addresses>
+# Contributing Authors:	    Joshna Sravanthi Kurra, Tharanie Subramaniam
+# Email Addresses:          jku230@uky.edu, tsu241@uky.edu
 # Date:                     <The date the file was last edited>
-# Purpose:                  <How this file contributes to the project>
+# Purpose:                  Acts as the server
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
 import socket
 import threading
+
+# creating the server 
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+# binding it to an address
+server.bind(("localhost", 12321))
+server.listen(2)
+
+# wait for a connection
+client_socket, client_address = server.accept
 
 # Use this file to write your server logic
 # You will need to support at least two clients
