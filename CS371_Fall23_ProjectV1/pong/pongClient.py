@@ -83,6 +83,13 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
+
+        client_data = {
+        'paddle_y': playerPaddleObj.rect.y,
+        'ball_x': ball.rect.x,
+        'ball_y': ball.rect.y,
+        'score': (lScore, rScore)
+    }
         
         # =========================================================================================
 
@@ -177,7 +184,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect(("localhost", 12321))
     client.send("Hello Server".encode('utf-8'))
-    client.close()
+    #client.close()
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
     server_info = {}
 
@@ -188,7 +195,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
 
     # Close this window and start the game with the info passed to you from the server
     #app.withdraw()     # Hides the window (we'll kill it later)
-    #playGame(screenWidth, screenHeight, ("left"|"right"), client)  # User will be either left or right paddle
+    playGame(screenWidth, screenHeight, "left", client)  # User will be either left or right paddle
     #app.quit()         # Kills the window
 
 

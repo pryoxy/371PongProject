@@ -8,19 +8,18 @@
 
 import socket
 import threading
+counter = 0; 
+def handle_client(client_socket, client_address):
+    if(counter == 1):
+         paddle_side = "left"
+    else:
+        paddle_side = "right"
 
-# def handle_client(client_socket, client_address):
-#     while True:
-#         data = client_socket.recv(1024)
-#         if not data:
-#             break
-
-#         print(f"Received: {data.decode('utf-8')} from {client_address}")
-
-#         client_socket.send(data)
+    counter += 1;
     
-#     print(f"Connection from {client_address} closed")
-#     client_socket.close()
+    paddle.send 
+
+
 
 # creating the server 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,8 +37,9 @@ print(f"Received: {data.decode('utf-8')} from {client_address}")
 # # store the client game states
 
 # # client handlers
-# client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
-# client_handler.start()
+
+client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
+client_handler.start()
 
 # Use this file to write your server logic
 # You will need to support at least two clients
@@ -48,5 +48,4 @@ print(f"Received: {data.decode('utf-8')} from {client_address}")
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
 
-#initialize game variables 
 
