@@ -83,11 +83,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
-        # create the client
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(("localhost", 12321))
         
-        client.close()
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
@@ -179,24 +175,11 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # Create a socket and connect to the server
     # You don't have to use SOCK_STREAM, use what you think is best
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect(("localhost", 12321)) 
-    client.send("Hello".encode())   
-
-    resp = client.recv(1024)
-    print(f"Server said: {resp.decode()}")
-    
-    msg = ""
-    while msg != "quit":
-        msg = input(":")
-        client.send(msg.encode())
-        resp = client.recv(1024)
-        print(f"Server said: {resp.decode()}")
-
-client.close()
-
-    
+    client.connect(("localhost", 12321))
+    client.send("Hello Server".encode('utf-8'))
+    client.close()
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
-
+    server_info = {}
 
     # If you have messages you'd like to show the user use the errorLabel widget like so
     errorLabel.config(text=f"Some update text. You input: IP: {ip}, Port: {port}")
