@@ -18,7 +18,11 @@ server.bind(("localhost", 12321))
 server.listen(2)
 
 # wait for a connection
-client_socket, client_address = server.accept
+client_socket, client_address = server.accept()
+
+# client handlers
+client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
+client_handler.start()
 
 # Use this file to write your server logic
 # You will need to support at least two clients
