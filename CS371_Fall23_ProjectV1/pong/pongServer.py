@@ -8,18 +8,18 @@
 
 import socket
 import threading
-counter = 0; 
-def handle_client(client_socket, client_address):
-    if(counter == 1):
-         paddle_side = "left"
+
+def handle_client(client_socket):
+    paddle_side = ""
+    if(counter == 0):
+        paddle_side = "left"
     else:
         paddle_side = "right"
 
-    counter += 1;
-    
-    paddle.send 
+    client_socket.send(paddle_side.encode('utf-8'))
 
-
+    client_socket.close()
+    counter += 1
 
 # creating the server 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,17 +29,17 @@ server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind(("localhost", 12321))
 server.listen(2)
 
+counter = 0
 # wait for a connection
 client_socket, client_address = server.accept()
-data = client_socket.recv(1024)
-print(f"Received: {data.decode('utf-8')} from {client_address}")
+#data = client_socket.recv(1024)
 
-# # store the client game states
+# store the client game states
 
-# # client handlers
-
-client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
-client_handler.start()
+# client handlers
+while True:
+    client_handler = threading.Thread(target=handle_client, args=(client_socket))
+    client_handler.start()
 
 # Use this file to write your server logic
 # You will need to support at least two clients
@@ -47,5 +47,3 @@ client_handler.start()
 # for each player and where the ball is, and relay that to each client
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
-
-
