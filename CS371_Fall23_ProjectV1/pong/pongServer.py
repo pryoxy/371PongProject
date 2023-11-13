@@ -30,3 +30,6 @@ client_handler.start()
 # for each player and where the ball is, and relay that to each client
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
+
+#initialize game variables 
+

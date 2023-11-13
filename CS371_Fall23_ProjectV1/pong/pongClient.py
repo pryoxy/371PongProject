@@ -5,7 +5,7 @@
 # Purpose:                  Acts as the Client
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
-
+#merge test
 import pygame
 import tkinter as tk
 import sys
@@ -24,12 +24,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
     # Constants
     WHITE = (255,255,255)
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() 
     scoreFont = pygame.font.Font("./assets/fonts/pong-score.ttf", 32)
     winFont = pygame.font.Font("./assets/fonts/visitor.ttf", 48)
     pointSound = pygame.mixer.Sound("./assets/sounds/point.wav")
     bounceSound = pygame.mixer.Sound("./assets/sounds/bounce.wav")
-
+    
     # Display objects
     screen = pygame.display.set_mode((screenWidth, screenHeight))
     winMessage = pygame.Rect(0,0,0,0)
