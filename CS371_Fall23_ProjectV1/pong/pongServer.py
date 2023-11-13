@@ -9,6 +9,19 @@
 import socket
 import threading
 
+# def handle_client(client_socket, client_address):
+#     while True:
+#         data = client_socket.recv(1024)
+#         if not data:
+#             break
+
+#         print(f"Received: {data.decode('utf-8')} from {client_address}")
+
+#         client_socket.send(data)
+    
+#     print(f"Connection from {client_address} closed")
+#     client_socket.close()
+
 # creating the server 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -19,10 +32,14 @@ server.listen(2)
 
 # wait for a connection
 client_socket, client_address = server.accept()
+data = client_socket.recv(1024)
+print(f"Received: {data.decode('utf-8')} from {client_address}")
 
-# client handlers
-client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
-client_handler.start()
+# # store the client game states
+
+# # client handlers
+# client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
+# client_handler.start()
 
 # Use this file to write your server logic
 # You will need to support at least two clients
