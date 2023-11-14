@@ -114,7 +114,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Update the player paddle and opponent paddle's location on the screen
         for paddle in [playerPaddleObj, opponentPaddleObj]:
             if paddle.moving == "down":
-                if paddle.rect.bottomleft[1] < screenHeight-10:                    
+                if paddle.rect.bottomleft[1] < screenHeight-10:
                     paddle.rect.y += paddle.speed
             elif paddle.moving == "up":
                 if paddle.rect.topleft[1] > 10:
@@ -179,7 +179,6 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-
         # =========================================================================================
 
 # This is where you will connect to the server to get the info required to call the game loop.  Mainly
