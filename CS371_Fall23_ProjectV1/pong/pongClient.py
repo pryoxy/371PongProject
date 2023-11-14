@@ -84,7 +84,14 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         client_data = {
-            "score": lScore
+            "score" : [lScore, rScore],
+            "player_location_y": playerPaddleObj.paddle.rect.y,
+            "player_location_x" : playerPaddleObj.paddle.rect.x,
+            "opponent_location_y" : opponentPaddleObj.paddle.rect.y,
+            "opponent_location_x" : opponentPaddleObj.paddle.rect.y,
+            "ball_location_y" : ball.rect.y,
+            "ball_location_x" : ball.rect.x,
+            "sync" : sync
         }
 
         # =========================================================================================
@@ -92,7 +99,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Update the player paddle and opponent paddle's location on the screen
         for paddle in [playerPaddleObj, opponentPaddleObj]:
             if paddle.moving == "down":
-                if paddle.rect.bottomleft[1] < screenHeight-10:
+                if paddle.rect.bottomleft[1] < screenHeight-10:                    
                     paddle.rect.y += paddle.speed
             elif paddle.moving == "up":
                 if paddle.rect.topleft[1] > 10:
@@ -232,4 +239,4 @@ if __name__ == "__main__":
     # Uncomment the line below if you want to play the game without a server to see how it should work
     # the startScreen() function should call playGame with the arguments given to it by the server this is
     # here for demo purposes only
-    playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+    #playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))
