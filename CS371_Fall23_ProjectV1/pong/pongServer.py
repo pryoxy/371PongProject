@@ -10,9 +10,9 @@ import socket
 import threading
 import json
 
-def handle_client(client_socket, counter):
+def handle_client(client_socket, player_id):
     paddle_side = ""
-    if(counter == 0):
+    if(player_id == 0):
         paddle_side = "left"
     else:
         paddle_side = "right"
@@ -20,19 +20,23 @@ def handle_client(client_socket, counter):
     # send client which side it is 
     client_socket.send(paddle_side.encode('utf-8'))
 
-    # receive the client data 
-    client_data = client_socket.recv(1024)
-    client_array.append(client_data)
+    while True: 
+        # receive the client data 
+        client_data = client_socket.recv(1024)
+        dict_data = json.loads(client_data.decode('utf-8'))
+        if paddle_side == "left":
+            client_array[0] = client_data
+            sync_array[0] = dict_data['sync']
+        else:
+            client_array[1] = client_data
+            sync_array[1] = dict_data['sync']
 
-    # decode the client data 
-    dict_data = json.loads(client_data.decode('utf-8'))
-    sync_array.append(dict_data['sync'])
-
-    # compare the sync values
-    if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
-        client_socket.send(client_array[0])
-    else:                                           # if right has a higher sync
-        client_socket.send(client_array[1])         
+        # compare the sync values
+        if((sync_array[0] != None) and (sync_array[1] != None)):
+            if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
+                client_socket.send(client_array[0])
+            else:                                           # if right has a higher sync
+                client_socket.send(client_array[1])         
 
     client_socket.close()
 
@@ -45,16 +49,17 @@ server.bind(("localhost", 12321))
 server.listen(2)
 
 # store client data 
-client_array = []
-sync_array = []
+client_array = [None] * 2
+# overwrite the sync variables, not append them each time
+sync_array = [None] * 2
 
 # client handling
-counter = 0
-while counter < 2:
+player_id = 0
+while player_id < 2:
     client_socket, client_address = server.accept()
-    client_handler = threading.Thread(target=handle_client, args=(client_socket, counter))
+    client_handler = threading.Thread(target=handle_client, args=(client_socket, player_id))
     client_handler.start()
-    counter += 1
+    player_id += 1
 
 # Use this file to write your server logic
 # You will need to support at least two clients

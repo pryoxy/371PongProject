@@ -94,7 +94,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             "opponent_y": opponentPaddleObj.rect.y,
             "sync": sync
         }
-        json_data = json.dump(client_data)
+        json_data = json.dumps(client_data)
         client.send(json_data.encode('utf-8'))
 
         # Receive data from the server
@@ -103,8 +103,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         playerPaddleObj.rect.y = updated_data['paddle_y']
         opponentPaddleObj.rect.x = updated_data['opponent_x']
         opponentPaddleObj.rect.y = updated_data['opponent_y']
-        ball.rect.x = ball['ball_x']
-        ball.rect.y = ball['ball_y']
+        ball.rect.x = updated_data['ball_x']
+        ball.rect.y = updated_data['ball_y']
         lScore = updated_data['score'][0]
         rScore = updated_data['score'][1]
         sync = updated_data['sync']
