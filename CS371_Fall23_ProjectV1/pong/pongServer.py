@@ -8,6 +8,7 @@
 
 import socket
 import threading
+import json
 
 def handle_client(client_socket, counter):
     paddle_side = ""
@@ -16,7 +17,22 @@ def handle_client(client_socket, counter):
     else:
         paddle_side = "right"
 
+    # send client which side it is 
     client_socket.send(paddle_side.encode('utf-8'))
+
+    # receive the client data 
+    client_data = client_socket.recv(1024)
+    client_array.append(client_data)
+
+    # decode the client data 
+    dict_data = json.loads(client_data.decode('utf-8'))
+    sync_array.append(dict_data['sync'])
+
+    # compare the sync values
+    if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
+        client_socket.send(client_array[0])
+    else:                                           # if right has a higher sync
+        client_socket.send(client_array[1])         
 
     client_socket.close()
 
@@ -28,9 +44,13 @@ server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind(("localhost", 12321))
 server.listen(2)
 
+# store client data 
+client_array = []
+sync_array = []
+
+# client handling
 counter = 0
-# client handlers
-while True:
+while counter < 2:
     client_socket, client_address = server.accept()
     client_handler = threading.Thread(target=handle_client, args=(client_socket, counter))
     client_handler.start()
