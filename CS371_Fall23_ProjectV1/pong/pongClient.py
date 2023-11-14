@@ -10,6 +10,7 @@ import pygame
 import tkinter as tk
 import sys
 import socket
+import json
 
 from assets.code.helperCode import *
 
@@ -84,8 +85,30 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         client_data = {
-            "score": lScore
+            "score": [lScore, rScore],
+            "paddle_x": playerPaddleObj.rect.x,
+            "paddle_y": playerPaddleObj.rect.y,
+            "ball_x": ball.rect.x,
+            "ball_y": ball.rect.y,
+            "opponent_x": opponentPaddleObj.rect.x,
+            "opponent_y": opponentPaddleObj.rect.y,
+            "sync": sync
         }
+        json_data = json.dump(client_data)
+        client.send(json_data.encode('utf-8'))
+
+        # Receive data from the server
+        updated_data = json.loads(client.recv(1024).decode('utf-8'))
+        playerPaddleObj.rect.x = updated_data['paddle_x']
+        playerPaddleObj.rect.y = updated_data['paddle_y']
+        opponentPaddleObj.rect.x = updated_data['opponent_x']
+        opponentPaddleObj.rect.y = updated_data['opponent_y']
+        ball.rect.x = ball['ball_x']
+        ball.rect.y = ball['ball_y']
+        lScore = updated_data['score'][0]
+        rScore = updated_data['score'][1]
+        sync = updated_data['sync']
+
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
@@ -156,11 +179,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-
         # =========================================================================================
-
-
-
 
 # This is where you will connect to the server to get the info required to call the game loop.  Mainly
 # the screen width, height and player paddle (either "left" or "right")
