@@ -90,7 +90,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             "opponent_location_y" : opponentPaddleObj.paddle.rect.y,
             "opponent_location_x" : opponentPaddleObj.paddle.rect.y,
             "ball_location_y" : ball.rect.y,
-            "ball_location_x" : ball.rect.x,
+            "ball_location_x" : ball.x,
             "sync" : sync
         }
 
@@ -164,6 +164,9 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
+
+
+        
 
         # =========================================================================================
 
