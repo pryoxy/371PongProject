@@ -22,21 +22,21 @@ def handle_client(client_socket, player_id):
 
     while True: 
         # receive the client data 
-        client_data = client_socket.recv(1024)
-        dict_data = json.loads(client_data.decode('utf-8'))
+        client_data = client_socket.recv(1024).decode('utf-8')
+        str_data = client_data.split(",")
         if paddle_side == "left":
             client_array[0] = client_data
-            sync_array[0] = dict_data['sync']
+            sync_array[0] = str_data[0]
         else:
             client_array[1] = client_data
-            sync_array[1] = dict_data['sync']
+            sync_array[1] = str_data[0]
 
         # compare the sync values
         if((sync_array[0] != None) and (sync_array[1] != None)):
             if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
-                client_socket.send(client_array[0])
+                client_socket.send(client_array[0].encode('utf-8'))
             else:                                           # if right has a higher sync
-                client_socket.send(client_array[1])         
+                client_socket.send(client_array[1].encode('utf-8'))         
 
     client_socket.close()
 

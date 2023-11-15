@@ -84,30 +84,35 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
-        client_data = {
-            "score": [lScore, rScore],
-            "paddle_x": playerPaddleObj.rect.x,
-            "paddle_y": playerPaddleObj.rect.y,
-            "ball_x": ball.rect.x,
-            "ball_y": ball.rect.y,
-            "opponent_x": opponentPaddleObj.rect.x,
-            "opponent_y": opponentPaddleObj.rect.y,
-            "sync": sync
-        }
-        json_data = json.dumps(client_data)
-        client.send(json_data.encode('utf-8'))
+        # client_data = [(lScore, rScore),(playerPaddleObj.rect.x, playerPaddleObj.rect.y),
+        #                (opponentPaddleObj.rect.x, opponentPaddleObj.rect.y),
+        #                (ball.rect.x, ball.rect.y), playerPaddle,
+        #                sync]
+        # json_data = json.dumps(client_data)
+        # client.send(json_data.encode('utf-8'))
+        client_data = f"{sync},{lScore},{rScore},{ball.rect.x},{ball.rect.y},{playerPaddle},{playerPaddleObj.rect.x},{playerPaddleObj.rect.y},{opponentPaddleObj.rect.x},{opponentPaddleObj.rect.y}"
+        client.send(client_data.encode('utf-8'))
 
         # Receive data from the server
-        updated_data = json.loads(client.recv(1024).decode('utf-8'))
-        playerPaddleObj.rect.x = updated_data['paddle_x']
-        playerPaddleObj.rect.y = updated_data['paddle_y']
-        opponentPaddleObj.rect.x = updated_data['opponent_x']
-        opponentPaddleObj.rect.y = updated_data['opponent_y']
-        ball.rect.x = updated_data['ball_x']
-        ball.rect.y = updated_data['ball_y']
-        lScore = updated_data['score'][0]
-        rScore = updated_data['score'][1]
-        sync = updated_data['sync']
+        updated_data = client.recv(1024).decode('utf-8')
+        str_data = updated_data.split(",")
+        sync = int(str_data[0])
+        lScore = int(str_data[1])
+        rScore = int(str_data[2])
+        ball.rect.x = int(str_data[3])
+        ball.rect.y = int(str_data[4])
+
+        if playerPaddle == str_data[5]:
+            playerPaddleObj.rect.x = int(str_data[6])
+            playerPaddleObj.rect.y = int(str_data[7])
+            opponentPaddleObj.rect.x = int(str_data[8])
+            opponentPaddleObj.rect.y = int(str_data[9])
+        else:
+            playerPaddleObj.rect.x = int(str_data[8])
+            playerPaddleObj.rect.y = int(str_data[9])
+            opponentPaddleObj.rect.x = int(str_data[6])
+            opponentPaddleObj.rect.y = int(str_data[7])
+    
 
         # =========================================================================================
 
