@@ -22,22 +22,27 @@ def handle_client(client_socket, player_id):
 
     while True: 
         # receive the client data 
-        client_data = client_socket.recv(1024)
-        dict_data = json.loads(client_data.decode('utf-8'))
+        buffer = client_socket.recv(1024)
+        client_data = buffer.decode('utf-8')
+        print(client_data)
+        dict_data = {}
+        dict_data = json.loads(client_data)
+        print(dict_data["paddle_side"])
         if paddle_side == "left":
+            print("HERE!")
             client_array[0] = client_data
-            sync_array[0] = dict_data['sync']
+            sync_array[0] = int(dict_data['sync'])
         else:
             client_array[1] = client_data
-            sync_array[1] = dict_data['sync']
+            sync_array[1] = int(dict_data['sync'])
 
         # compare the sync values
-        if((sync_array[0] != None) and (sync_array[1] != None)):
-            if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
-                client_socket.send(client_array[0])
-            else:                                           # if right has a higher sync
-                client_socket.send(client_array[1])         
-
+        #if((sync_array[0] != None) and (sync_array[1] != None)):
+        if(sync_array[0] > sync_array[1]):              # if left has a higher sync 
+            client_socket.send(client_array[0].encode('utf-8'))
+        else:                                           # if right has a higher sync
+            client_socket.send(client_array[1].encode('utf-8'))         
+        print()
     client_socket.close()
 
 # creating the server 

@@ -85,29 +85,42 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         client_data = {
-            "score": [lScore, rScore],
-            "paddle_x": playerPaddleObj.rect.x,
-            "paddle_y": playerPaddleObj.rect.y,
-            "ball_x": ball.rect.x,
-            "ball_y": ball.rect.y,
-            "opponent_x": opponentPaddleObj.rect.x,
-            "opponent_y": opponentPaddleObj.rect.y,
-            "sync": sync
+            "l_score": str(lScore),
+            "r_score": str(rScore),
+            "player_x": str(playerPaddleObj.rect.x),
+            "player_y": str(playerPaddleObj.rect.y),
+            "ball_x": str(ball.rect.x),
+            "ball_y": str(ball.rect.y),
+            "opponent_x": str(opponentPaddleObj.rect.x),
+            "opponent_y": str(opponentPaddleObj.rect.y),
+            "paddle_side": playerPaddle,
+            "sync": str(sync)
         }
         json_data = json.dumps(client_data)
         client.send(json_data.encode('utf-8'))
+        # client.send(str(sync).encode('utf-8'))
 
         # Receive data from the server
-        updated_data = json.loads(client.recv(1024).decode('utf-8'))
-        playerPaddleObj.rect.x = updated_data['paddle_x']
-        playerPaddleObj.rect.y = updated_data['paddle_y']
-        opponentPaddleObj.rect.x = updated_data['opponent_x']
-        opponentPaddleObj.rect.y = updated_data['opponent_y']
-        ball.rect.x = updated_data['ball_x']
-        ball.rect.y = updated_data['ball_y']
-        lScore = updated_data['score'][0]
-        rScore = updated_data['score'][1]
-        sync = updated_data['sync']
+        buffer = client.recv(1024)
+        print(buffer)    
+        updated_data = json.loads(buffer.decode('utf-8'))
+        print(updated_data)
+        if playerPaddle == updated_data['paddle_side']:
+            playerPaddleObj.rect.x = int(updated_data['player_x'])
+            playerPaddleObj.rect.y = int(updated_data['player_y'])
+            opponentPaddleObj.rect.x = int(updated_data['opponent_x'])
+            opponentPaddleObj.rect.y = int(updated_data['opponent_y'])
+        else:
+           playerPaddleObj.rect.x = int(updated_data['opponent_x'])
+           playerPaddleObj.rect.y = int(updated_data['opponent_y'])
+           opponentPaddleObj.rect.x = int(updated_data['player_x'])
+           opponentPaddleObj.rect.y = int(updated_data['player_y'])
+
+        ball.rect.x = int(updated_data['ball_x'])
+        ball.rect.y = int(updated_data['ball_y'])
+        lScore = int(updated_data['l_score'])
+        rScore = int(updated_data['r_score'])
+        sync = int(updated_data['sync'])
 
         # =========================================================================================
 
@@ -157,6 +170,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             
             pygame.draw.rect(screen, WHITE, ball)
             # ==== End Ball Logic =================================================================
+            print(f"Drawing")
 
         # Drawing the dotted line in the center
         for i in centerLine:
