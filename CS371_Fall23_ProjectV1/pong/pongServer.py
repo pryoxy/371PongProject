@@ -19,8 +19,6 @@ def handle_client(client_socket, player_id):
     else:
         paddle_side = "right"
         client_socket.send(paddle_side.encode('utf-8'))     # send the second client its paddle side
-        # client_socket.send("go".encode('utf-8'))            # send a go message to first client
-        # client_socket_1.send("go".encode('utf-8'))
 
     game_data = {
         "l_score": 0,
@@ -35,7 +33,7 @@ def handle_client(client_socket, player_id):
         "paddle_side": "",
         "sync": 0
     }
-
+    
     while True: 
         mutex = Lock()
         # receive the client data 
@@ -80,8 +78,8 @@ def handle_client(client_socket, player_id):
                 game_data['ball_y'] = dict_data['ball_y']
                 game_data['player_x'] = dict_data['player_x']
                 game_data['player_y'] = dict_data['player_y']
-                game_data['opponent_x'] = dict_data['opponent_x']
-                game_data['opponent_y'] = dict_data['opponent_y']
+                game_data['opponent_x'] = player_2['opponent_x']
+                game_data['opponent_y'] = player_2['opponent_y']
                 game_data['l_score'] = dict_data['l_score']
                 game_data['r_score'] = dict_data['r_score']
                 game_data['paddle_move'] = dict_data['paddle_move']
@@ -93,8 +91,8 @@ def handle_client(client_socket, player_id):
                 game_data['ball_y'] = player_2['ball_y'] 
                 game_data['player_x'] = player_2['player_x']
                 game_data['player_y'] = player_2['player_y']
-                game_data['opponent_x'] = player_2['opponent_x']
-                game_data['opponent_y'] = player_2['opponent_y']
+                game_data['opponent_x'] = player_1['opponent_x']
+                game_data['opponent_y'] = player_1['opponent_y']
                 game_data['l_score'] = player_2['l_score']
                 game_data['r_score'] = player_2['r_score']
                 game_data['paddle_move'] = player_2['paddle_move']
@@ -106,8 +104,8 @@ def handle_client(client_socket, player_id):
                 game_data['ball_y'] = dict_data['ball_y']
                 game_data['player_x'] = dict_data['player_x']
                 game_data['player_y'] = dict_data['player_y']
-                game_data['opponent_x'] = dict_data['opponent_x']
-                game_data['opponent_y'] = dict_data['opponent_y']
+                game_data['opponent_x'] = player_1['opponent_x']
+                game_data['opponent_y'] = player_1['opponent_y']
                 game_data['l_score'] = dict_data['l_score']
                 game_data['r_score'] = dict_data['r_score']
                 game_data['paddle_move'] = dict_data['paddle_move']
@@ -119,8 +117,8 @@ def handle_client(client_socket, player_id):
                 game_data['ball_y'] = player_1['ball_y'] 
                 game_data['player_x'] = player_1['player_x']
                 game_data['player_y'] = player_1['player_y']
-                game_data['opponent_x'] = player_1['opponent_x']
-                game_data['opponent_y'] = player_1['opponent_y']
+                game_data['opponent_x'] = player_2['opponent_x']
+                game_data['opponent_y'] = player_2['opponent_y']
                 game_data['l_score'] = player_1['l_score']
                 game_data['r_score'] = player_1['r_score']
                 game_data['paddle_move'] = player_1['paddle_move']
@@ -181,10 +179,11 @@ player_2 = {
 player_id = 0
 client_socket_1, client_address_1 = server.accept()
 client_handler_1 = threading.Thread(target=handle_client, args=(client_socket_1, player_id))
-player_id += 1
+
+player_id2 = 1
 
 client_socket_2, client_address_2 = server.accept()
-client_handler_2 = threading.Thread(target=handle_client, args=(client_socket_2, player_id))
+client_handler_2 = threading.Thread(target=handle_client, args=(client_socket_2, player_id2))
 
 client_handler_1.start()
 client_handler_2.start()
