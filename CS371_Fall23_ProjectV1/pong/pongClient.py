@@ -85,17 +85,17 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         client_data = {
-            "l_score": str(lScore),
-            "r_score": str(rScore),
-            "player_x": str(playerPaddleObj.rect.x),
-            "player_y": str(playerPaddleObj.rect.y),
-            "ball_x": str(ball.rect.x),
-            "ball_y": str(ball.rect.y),
-            "opponent_x": str(opponentPaddleObj.rect.x),
-            "opponent_y": str(opponentPaddleObj.rect.y),
+            "l_score": lScore,
+            "r_score": rScore,
+            "player_x": playerPaddleObj.rect.x,
+            "player_y": playerPaddleObj.rect.y,
+            "ball_x": ball.rect.x,
+            "ball_y": ball.rect.y,
+            "opponent_x": opponentPaddleObj.rect.x,
+            "opponent_y": opponentPaddleObj.rect.y,
             "paddle_move": playerPaddleObj.moving,
             "paddle_side": playerPaddle,
-            "sync": str(sync)
+            "sync": sync
         }
         json_data = json.dumps(client_data)
         client.send(json_data.encode('utf-8'))      # sending game state
@@ -103,24 +103,24 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
         # Receive data from the server
         buffer = client.recv(1024)                  # receiving game state of the higher sync client 
-        print(buffer)    
+        #print(buffer)    
         updated_data = json.loads(buffer.decode('utf-8'))
         if playerPaddle == updated_data['paddle_side']:
-            playerPaddleObj.rect.x = int(updated_data['player_x'])
-            playerPaddleObj.rect.y = int(updated_data['player_y'])
-            opponentPaddleObj.rect.x = int(updated_data['opponent_x'])
-            opponentPaddleObj.rect.y = int(updated_data['opponent_y'])
+            playerPaddleObj.rect.x = updated_data['player_x']
+            playerPaddleObj.rect.y = updated_data['player_y']
+            opponentPaddleObj.rect.x = updated_data['opponent_x']
+            opponentPaddleObj.rect.y = updated_data['opponent_y']
         else:
-           playerPaddleObj.rect.x = int(updated_data['opponent_x'])
-           playerPaddleObj.rect.y = int(updated_data['opponent_y'])
-           opponentPaddleObj.rect.x = int(updated_data['player_x'])
-           opponentPaddleObj.rect.y = int(updated_data['player_y'])
+           playerPaddleObj.rect.x = updated_data['opponent_x']
+           playerPaddleObj.rect.y = updated_data['opponent_y']
+           opponentPaddleObj.rect.x = updated_data['player_x']
+           opponentPaddleObj.rect.y = updated_data['player_y']
 
-        ball.rect.x = int(updated_data['ball_x'])
-        ball.rect.y = int(updated_data['ball_y'])
-        lScore = int(updated_data['l_score'])
-        rScore = int(updated_data['r_score'])
-        sync = int(updated_data['sync'])
+        ball.rect.x = updated_data['ball_x']
+        ball.rect.y = updated_data['ball_y']
+        lScore = updated_data['l_score']
+        rScore = updated_data['r_score']
+        sync = updated_data['sync']
 
         # =========================================================================================
 
@@ -170,7 +170,6 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             
             pygame.draw.rect(screen, WHITE, ball)
             # ==== End Ball Logic =================================================================
-            print(f"Drawing")
 
         # Drawing the dotted line in the center
         for i in centerLine:
@@ -220,15 +219,11 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # If you have messages you'd like to show the user use the errorLabel widget like so
     errorLabel.config(text=f"Some update text. You input: IP: {ip}, Port: {port}")
     # You may or may not need to call this, depending on how many times you update the label
-    errorLabel.update()     
-
-    # wait for a go message 
-    start_msg = client.recv(1024).decode('utf-8')
+    errorLabel.update()
 
     # Close this window and start the game with the info passed to you from the server
     app.withdraw()     # Hides the window (we'll kill it later)
-    if(start_msg == "go"):
-        playGame(screenWidth, screenHeight, paddle, client)  # User will be either left or right paddle
+    playGame(screenWidth, screenHeight, paddle, client)  # User will be either left or right paddle
     app.quit()         # Kills the window
 
 

@@ -35,6 +35,7 @@ def handle_client(client_socket, player_id):
         "paddle_side": "",
         "sync": 0
     }
+
     while True: 
         mutex = Lock()
         # receive the client data 
@@ -75,17 +76,17 @@ def handle_client(client_socket, player_id):
         
         if(player_id == 0):         # left paddle
             if(dict_data['sync'] > player_2['sync']):   
-                player_1['ball_x'] = dict_data['ball_x']
-                player_1['ball_y'] = dict_data['ball_y']
-                player_1['player_x'] = dict_data['player_x']
-                player_1['player_y'] = dict_data['player_y']
-                player_1['opponent_x'] = dict_data['opponent_x']
-                player_1['opponent_y'] = dict_data['opponent_y']
-                player_1['l_score'] = dict_data['l_score']
-                player_1['r_score'] = dict_data['r_score']
-                player_1['paddle_move'] = dict_data['paddle_move']
-                player_1['paddle_side'] = dict_data['paddle_side']
-                player_1['sync'] = dict_data['sync'] 
+                game_data['ball_x'] = dict_data['ball_x']
+                game_data['ball_y'] = dict_data['ball_y']
+                game_data['player_x'] = dict_data['player_x']
+                game_data['player_y'] = dict_data['player_y']
+                game_data['opponent_x'] = dict_data['opponent_x']
+                game_data['opponent_y'] = dict_data['opponent_y']
+                game_data['l_score'] = dict_data['l_score']
+                game_data['r_score'] = dict_data['r_score']
+                game_data['paddle_move'] = dict_data['paddle_move']
+                game_data['paddle_side'] = dict_data['paddle_side']
+                game_data['sync'] = dict_data['sync'] 
             else:
                 # populate game_dat2'
                 game_data['ball_x'] = player_2['ball_x'] 
@@ -100,17 +101,34 @@ def handle_client(client_socket, player_id):
                 game_data['paddle_side'] = player_2['paddle_side']
                 game_data['sync'] = player_2['sync']
         else:                       # right paddle
-            if(dict_data['sync'] > player_2['sync']):
-                # populate game data 
+            if(dict_data['sync'] > player_1['sync']):   
+                game_data['ball_x'] = dict_data['ball_x']
+                game_data['ball_y'] = dict_data['ball_y']
+                game_data['player_x'] = dict_data['player_x']
+                game_data['player_y'] = dict_data['player_y']
+                game_data['opponent_x'] = dict_data['opponent_x']
+                game_data['opponent_y'] = dict_data['opponent_y']
+                game_data['l_score'] = dict_data['l_score']
+                game_data['r_score'] = dict_data['r_score']
+                game_data['paddle_move'] = dict_data['paddle_move']
+                game_data['paddle_side'] = dict_data['paddle_side']
+                game_data['sync'] = dict_data['sync'] 
             else:
-                # populate game data 
+                # populate game_dat2'
+                game_data['ball_x'] = player_1['ball_x'] 
+                game_data['ball_y'] = player_1['ball_y'] 
+                game_data['player_x'] = player_1['player_x']
+                game_data['player_y'] = player_1['player_y']
+                game_data['opponent_x'] = player_1['opponent_x']
+                game_data['opponent_y'] = player_1['opponent_y']
+                game_data['l_score'] = player_1['l_score']
+                game_data['r_score'] = player_1['r_score']
+                game_data['paddle_move'] = player_1['paddle_move']
+                game_data['paddle_side'] = player_1['paddle_side']
+                game_data['sync'] = player_1['sync']
 
-        # compare the sync values
-        if(player_1['sync'] and player_2['sync']):
-            if(player_1['sync'] > player_2['sync']):              # if left has a higher sync 
-                client_socket.send(client_array[0].encode('utf-8'))     # send the client the game state with the higher sync value 
-            else:                                           # if right has a higher sync
-                client_socket.send(client_array[1].encode('utf-8'))       # send the client the game state with the higher sync value  
+        data_to_send = json.dumps(game_data)
+        client_socket.send(data_to_send.encode('utf-8'))
 
     client_socket.close()
 
