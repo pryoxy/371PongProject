@@ -93,18 +93,18 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             "ball_y": str(ball.rect.y),
             "opponent_x": str(opponentPaddleObj.rect.x),
             "opponent_y": str(opponentPaddleObj.rect.y),
+            "paddle_move": playerPaddleObj.moving,
             "paddle_side": playerPaddle,
             "sync": str(sync)
         }
         json_data = json.dumps(client_data)
-        client.send(json_data.encode('utf-8'))
+        client.send(json_data.encode('utf-8'))      # sending game state
         # client.send(str(sync).encode('utf-8'))
 
         # Receive data from the server
-        buffer = client.recv(1024)
+        buffer = client.recv(1024)                  # receiving game state of the higher sync client 
         print(buffer)    
         updated_data = json.loads(buffer.decode('utf-8'))
-        print(updated_data)
         if playerPaddle == updated_data['paddle_side']:
             playerPaddleObj.rect.x = int(updated_data['player_x'])
             playerPaddleObj.rect.y = int(updated_data['player_y'])
@@ -222,9 +222,13 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # You may or may not need to call this, depending on how many times you update the label
     errorLabel.update()     
 
+    # wait for a go message 
+    start_msg = client.recv(1024).decode('utf-8')
+
     # Close this window and start the game with the info passed to you from the server
     app.withdraw()     # Hides the window (we'll kill it later)
-    playGame(screenWidth, screenHeight, paddle, client)  # User will be either left or right paddle
+    if(start_msg == "go"):
+        playGame(screenWidth, screenHeight, paddle, client)  # User will be either left or right paddle
     app.quit()         # Kills the window
 
 
