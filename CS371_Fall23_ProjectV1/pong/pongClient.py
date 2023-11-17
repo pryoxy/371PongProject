@@ -1,8 +1,8 @@
 # =================================================================================================
 # Contributing Authors:	    Tharanie Subramaniam, Joshna Sravanthi Kurra
 # Email Addresses:          jku230@uky.edu, tsu241@uky.edu
-# Date:                     <The date the file was last edited>
-# Purpose:                  Acts as the Client
+# Date:                     11/17/2023
+# Purpose:                  Acts as the Client for the pong game
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 #merge test
@@ -84,27 +84,30 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
-        client_data = {
-            "l_score": lScore,
-            "r_score": rScore,
-            "player_x": playerPaddleObj.rect.x,
-            "player_y": playerPaddleObj.rect.y,
-            "ball_x": ball.rect.x,
-            "ball_y": ball.rect.y,
-            "opponent_x": opponentPaddleObj.rect.x,
-            "opponent_y": opponentPaddleObj.rect.y,
-            "paddle_move": playerPaddleObj.moving,
-            "paddle_side": playerPaddle,
-            "sync": sync
-        }
-        json_data = json.dumps(client_data)
-        client.send(json_data.encode('utf-8'))      # sending game state
-        # client.send(str(sync).encode('utf-8'))
 
-        # Receive data from the server
-        buffer = client.recv(1024)                  # receiving game state of the higher sync client 
-        #print(buffer)    
+        # # dictionary to store all client data that is meant to sent over to the server
+        # client_data = {
+        #     "l_score": lScore,
+        #     "r_score": rScore,
+        #     "player_x": playerPaddleObj.rect.x,
+        #     "player_y": playerPaddleObj.rect.y,
+        #     "ball_x": ball.rect.x,
+        #     "ball_y": ball.rect.y,
+        #     "opponent_x": opponentPaddleObj.rect.x,
+        #     "opponent_y": opponentPaddleObj.rect.y,
+        #     "paddle_side": playerPaddle,
+        #     "sync": sync
+        # }
+
+        # # converting to json and sending over dictionary
+        # json_data = json.dumps(client_data)
+        # client.send(json_data.encode('utf-8')) 
+
+        # Receive and decode data from the server
+        buffer = client.recv(1024)
         updated_data = json.loads(buffer.decode('utf-8'))
+
+        # reassign data based on what the server sent over. 
         if playerPaddle == updated_data['paddle_side']:
             playerPaddleObj.rect.x = updated_data['player_x']
             playerPaddleObj.rect.y = updated_data['player_y']
@@ -192,6 +195,23 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
+        # dictionary to store all client data that is meant to sent over to the server
+        client_data = {
+            "l_score": lScore,
+            "r_score": rScore,
+            "player_x": playerPaddleObj.rect.x,
+            "player_y": playerPaddleObj.rect.y,
+            "ball_x": ball.rect.x,
+            "ball_y": ball.rect.y,
+            "opponent_x": opponentPaddleObj.rect.x,
+            "opponent_y": opponentPaddleObj.rect.y,
+            "paddle_side": playerPaddle,
+            "sync": sync
+        }
+
+        # converting to json and sending over dictionary
+        json_data = json.dumps(client_data)
+        client.send(json_data.encode('utf-8')) 
         # =========================================================================================
 
 # This is where you will connect to the server to get the info required to call the game loop.  Mainly
@@ -259,8 +279,3 @@ def startScreen():
 
 if __name__ == "__main__":
     startScreen()
-    
-    # Uncomment the line below if you want to play the game without a server to see how it should work
-    # the startScreen() function should call playGame with the arguments given to it by the server this is
-    # here for demo purposes only
-    #playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))

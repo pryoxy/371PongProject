@@ -11,15 +11,22 @@ import threading
 import json
 from threading import Lock
 
-def handle_client(client_socket, player_id):
+def handle_client(client_socket: socket.socket, player_id: int) -> None:
+    # Purpose: Handling the clients, including assigning paddle side and synchronizing
+    # Arguments:
+    # client_socket: A socket object that gives the socket of current thread
+    # player_id: An integer that indicates which paddle a client is
+
+    # Assign paddle sides based on player_id
     paddle_side = ""
-    if(player_id == 0):         # player_id = 0: left 
+    if(player_id == 0):         
         paddle_side = "left"
-        client_socket.send(paddle_side.encode('utf-8'))     # send the first client its paddle side
+        client_socket.send(paddle_side.encode('utf-8'))    
     else:
         paddle_side = "right"
-        client_socket.send(paddle_side.encode('utf-8'))     # send the second client its paddle side
+        client_socket.send(paddle_side.encode('utf-8'))  
 
+    # dictionary to store most up-to-date game data
     game_data = {
         "l_score": 0,
         "r_score": 0,
@@ -29,21 +36,23 @@ def handle_client(client_socket, player_id):
         "ball_y": 0,
         "opponent_x": 0,
         "opponent_y": 0,
-        "paddle_move": "",
         "paddle_side": "",
         "sync": 0
     }
     
+    # go into a loop of synchronization 
     while True: 
         mutex = Lock()
-        # receive the client data 
-        buffer = client_socket.recv(1024)           # getting the game state from the client for the first time
+        # receive and decode the client data 
+        buffer = client_socket.recv(1024)           
         client_data = buffer.decode('utf-8')
         dict_data = {}
         dict_data = json.loads(client_data)
         if not dict_data:
             break
         mutex.acquire()
+
+        # populate each player's data
         try:
             if paddle_side == "left":
                 player_1['ball_x'] = dict_data['ball_x']
@@ -54,7 +63,6 @@ def handle_client(client_socket, player_id):
                 player_1['opponent_y'] = dict_data['opponent_y']
                 player_1['l_score'] = dict_data['l_score']
                 player_1['r_score'] = dict_data['r_score']
-                player_1['paddle_move'] = dict_data['paddle_move']
                 player_1['paddle_side'] = dict_data['paddle_side']
                 player_1['sync'] = dict_data['sync']
             else:
@@ -66,14 +74,13 @@ def handle_client(client_socket, player_id):
                 player_2['opponent_y'] = dict_data['opponent_y']
                 player_2['l_score'] = dict_data['l_score']
                 player_2['r_score'] = dict_data['r_score']
-                player_2['paddle_move'] = dict_data['paddle_move']
                 player_2['paddle_side'] = dict_data['paddle_side']
                 player_2['sync'] = dict_data['sync']
         finally:
             mutex.release()
         
-        if(player_id == 0):         # left paddle
-            if(dict_data['sync'] > player_2['sync']):   
+        if(player_id == 0):        # compare sync values for thread 1
+            if(dict_data['sync'] > player_2['sync']):       # if player_1 has a higher sync 
                 game_data['ball_x'] = dict_data['ball_x']
                 game_data['ball_y'] = dict_data['ball_y']
                 game_data['player_x'] = dict_data['player_x']
@@ -82,10 +89,9 @@ def handle_client(client_socket, player_id):
                 game_data['opponent_y'] = player_2['player_y']
                 game_data['l_score'] = dict_data['l_score']
                 game_data['r_score'] = dict_data['r_score']
-                game_data['paddle_move'] = dict_data['paddle_move']
                 game_data['paddle_side'] = dict_data['paddle_side']
                 game_data['sync'] = dict_data['sync'] 
-            else:
+            else:                                           # if player_2 has a higher sync 
                 # populate game_dat2'
                 game_data['ball_x'] = player_2['ball_x'] 
                 game_data['ball_y'] = player_2['ball_y'] 
@@ -95,11 +101,10 @@ def handle_client(client_socket, player_id):
                 game_data['opponent_y'] = player_1['player_y']
                 game_data['l_score'] = player_2['l_score']
                 game_data['r_score'] = player_2['r_score']
-                game_data['paddle_move'] = player_2['paddle_move']
                 game_data['paddle_side'] = player_2['paddle_side']
                 game_data['sync'] = player_2['sync']
-        else:                       # right paddle
-            if(dict_data['sync'] > player_1['sync']):   
+        else:                       # compare sync values for thread 2
+            if(dict_data['sync'] > player_1['sync']):       # if player_2 has a higher sync 
                 game_data['ball_x'] = dict_data['ball_x']
                 game_data['ball_y'] = dict_data['ball_y']
                 game_data['player_x'] = dict_data['player_x']
@@ -108,10 +113,9 @@ def handle_client(client_socket, player_id):
                 game_data['opponent_y'] = player_1['player_y']
                 game_data['l_score'] = dict_data['l_score']
                 game_data['r_score'] = dict_data['r_score']
-                game_data['paddle_move'] = dict_data['paddle_move']
                 game_data['paddle_side'] = dict_data['paddle_side']
                 game_data['sync'] = dict_data['sync'] 
-            else:
+            else:                                           # if player_1 has a higher sync 
                 # populate game_dat2'
                 game_data['ball_x'] = player_1['ball_x'] 
                 game_data['ball_y'] = player_1['ball_y'] 
@@ -121,10 +125,10 @@ def handle_client(client_socket, player_id):
                 game_data['opponent_y'] = player_2['player_y']
                 game_data['l_score'] = player_1['l_score']
                 game_data['r_score'] = player_1['r_score']
-                game_data['paddle_move'] = player_1['paddle_move']
                 game_data['paddle_side'] = player_1['paddle_side']
                 game_data['sync'] = player_1['sync']
 
+        # encode and send updated data 
         data_to_send = json.dumps(game_data)
         client_socket.send(data_to_send.encode('utf-8'))
 
@@ -135,17 +139,10 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # binding it to an address
-server.bind(("10.47.201.227", 12321))
+server.bind(("10.113.32.61", 12321))
 server.listen(2)
 
-# # store the sockets 
-# socket_array = [None] * 2
-# store client data 
-client_array = [None] * 2
-# overwrite the sync variables, not append them each time
-sync_array = [None] * 2
-
-# player 1 data 
+# dictionary to store player_1 data
 player_1 = {
     "l_score": 0,
     "r_score": 0,
@@ -155,12 +152,11 @@ player_1 = {
     "ball_y": 0,
     "opponent_x": 0,
     "opponent_y": 0,
-    "paddle_move": "",
     "paddle_side": "",
     "sync": 0
 }
 
-# player 2 data 
+# dictionary to store player_2 data
 player_2 = {
     "l_score": 0,
     "r_score": 0,
@@ -170,12 +166,11 @@ player_2 = {
     "ball_y": 0,
     "opponent_x": 0,
     "opponent_y": 0,
-    "paddle_move": "",
     "paddle_side": "",
     "sync": 0
 }
-# client handling
-# do separate lines for each thread
+
+# client handling: create threads
 player_id = 0
 client_socket_1, client_address_1 = server.accept()
 client_handler_1 = threading.Thread(target=handle_client, args=(client_socket_1, player_id))
@@ -189,16 +184,3 @@ client_handler_2.start()
 
 client_handler_1.join()
 client_handler_2.join()
-
-# while player_id < 2:
-#     client_socket, client_address = server.accept()
-#     client_handler = threading.Thread(target=handle_client, args=(client_socket, player_id))
-#     client_handler.start()
-#     player_id += 1
-
-# Use this file to write your server logic
-# You will need to support at least two clients
-# You will need to keep track of where on the screen (x,y coordinates) each paddle is, the score 
-# for each player and where the ball is, and relay that to each client
-# I suggest you use the sync variable in pongClient.py to determine how out of sync your two
-# clients are and take actions to resync the games
