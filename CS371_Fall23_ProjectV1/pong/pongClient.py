@@ -5,7 +5,7 @@
 # Purpose:                  Acts as the Client for the pong game
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
-#merge test
+
 import pygame
 import tkinter as tk
 import sys
