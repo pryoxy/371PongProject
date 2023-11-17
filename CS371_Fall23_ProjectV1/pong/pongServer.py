@@ -135,7 +135,7 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # binding it to an address
-server.bind(("10.113.32.61", 12321))
+server.bind(("10.47.12.242", 12321))
 server.listen(2)
 
 # # store the sockets 

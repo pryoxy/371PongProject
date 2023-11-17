@@ -105,17 +105,10 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         buffer = client.recv(1024)                  # receiving game state of the higher sync client 
         #print(buffer)    
         updated_data = json.loads(buffer.decode('utf-8'))
-        if playerPaddle == updated_data['paddle_side']:
-            playerPaddleObj.rect.x = updated_data['player_x']
-            playerPaddleObj.rect.y = updated_data['player_y']
-            opponentPaddleObj.rect.x = updated_data['opponent_x']
-            opponentPaddleObj.rect.y = updated_data['opponent_y']
-        else:
-           playerPaddleObj.rect.x = updated_data['opponent_x']
-           playerPaddleObj.rect.y = updated_data['opponent_y']
-           opponentPaddleObj.rect.x = updated_data['player_x']
-           opponentPaddleObj.rect.y = updated_data['player_y']
-
+        playerPaddleObj.rect.x = updated_data['player_x']
+        playerPaddleObj.rect.y = updated_data['player_y']
+        opponentPaddleObj.rect.x = updated_data['opponent_x']
+        opponentPaddleObj.rect.y = updated_data['opponent_y']
         ball.rect.x = updated_data['ball_x']
         ball.rect.y = updated_data['ball_y']
         lScore = updated_data['l_score']
