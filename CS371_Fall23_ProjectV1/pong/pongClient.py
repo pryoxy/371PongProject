@@ -18,7 +18,16 @@ from assets.code.helperCode import *
 # where you should add to the code are marked.  Feel free to change any part of this project
 # to suit your needs.
 def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.socket) -> None:
-    
+    # Author: Joshna Sravanthi Kurra, Tharanie Subramaniam, Alexander Barrera
+    # Purpose: to run the client logic that starts the game and takes care of updating and displaying game state
+    # Arguments:
+    # screenWidth: the width of the screen
+    # screenHeight: the height of the screen
+    # playerPaddle: which side a given client is in the game
+    # client: the socket that the client is connected at 
+    # Pre: both clients are connected to server and play game gets called
+    # Post: data is sent back and forth between server and client
+
     # Pygame inits
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
@@ -85,23 +94,23 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
 
-        # # dictionary to store all client data that is meant to sent over to the server
-        # client_data = {
-        #     "l_score": lScore,
-        #     "r_score": rScore,
-        #     "player_x": playerPaddleObj.rect.x,
-        #     "player_y": playerPaddleObj.rect.y,
-        #     "ball_x": ball.rect.x,
-        #     "ball_y": ball.rect.y,
-        #     "opponent_x": opponentPaddleObj.rect.x,
-        #     "opponent_y": opponentPaddleObj.rect.y,
-        #     "paddle_side": playerPaddle,
-        #     "sync": sync
-        # }
+        # dictionary to store all client data that is meant to sent over to the server
+        client_data = {
+            "l_score": lScore,
+            "r_score": rScore,
+            "player_x": playerPaddleObj.rect.x,
+            "player_y": playerPaddleObj.rect.y,
+            "ball_x": ball.rect.x,
+            "ball_y": ball.rect.y,
+            "opponent_x": opponentPaddleObj.rect.x,
+            "opponent_y": opponentPaddleObj.rect.y,
+            "paddle_side": playerPaddle,
+            "sync": sync
+        }
 
-        # # converting to json and sending over dictionary
-        # json_data = json.dumps(client_data)
-        # client.send(json_data.encode('utf-8')) 
+        # converting to json and sending over dictionary
+        json_data = json.dumps(client_data)
+        client.send(json_data.encode('utf-8')) 
 
         # Receive and decode data from the server
         buffer = client.recv(1024)
@@ -196,22 +205,6 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
         # dictionary to store all client data that is meant to sent over to the server
-        client_data = {
-            "l_score": lScore,
-            "r_score": rScore,
-            "player_x": playerPaddleObj.rect.x,
-            "player_y": playerPaddleObj.rect.y,
-            "ball_x": ball.rect.x,
-            "ball_y": ball.rect.y,
-            "opponent_x": opponentPaddleObj.rect.x,
-            "opponent_y": opponentPaddleObj.rect.y,
-            "paddle_side": playerPaddle,
-            "sync": sync
-        }
-
-        # converting to json and sending over dictionary
-        json_data = json.dumps(client_data)
-        client.send(json_data.encode('utf-8')) 
         # =========================================================================================
 
 # This is where you will connect to the server to get the info required to call the game loop.  Mainly
@@ -219,12 +212,15 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 # If you want to hard code the screen's dimensions into the code, that's fine, but you will need to know
 # which client is which
 def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
+    # Author: Joshna Sravanthi Kurra, Tharanie Subramaniam, Alexander Barrera
     # Purpose:      This method is fired when the join button is clicked
     # Arguments:
     # ip            A string holding the IP address of the server
     # port          A string holding the port the server is using
     # errorLabel    A tk label widget, modify it's text to display messages to the user (example below)
     # app           The tk window object, needed to kill the window
+    # Pre: user clicks join button
+    # Post: client joins the server and paddle side is received
     
     # Create a socket and connect to the server
     # You don't have to use SOCK_STREAM, use what you think is best

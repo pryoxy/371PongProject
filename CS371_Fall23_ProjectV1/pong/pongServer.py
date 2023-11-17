@@ -2,7 +2,7 @@
 # Contributing Authors:	    Joshna Sravanthi Kurra, Tharanie Subramaniam
 # Email Addresses:          jku230@uky.edu, tsu241@uky.edu
 # Date:                     <The date the file was last edited>
-# Purpose:                  Acts as the server
+# Purpose:                  Acts as the server for the pong game
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
@@ -12,10 +12,13 @@ import json
 from threading import Lock
 
 def handle_client(client_socket: socket.socket, player_id: int) -> None:
+    # Author: Joshna Sravanthi Kurra, Tharanie Subramaniam
     # Purpose: Handling the clients, including assigning paddle side and synchronizing
     # Arguments:
     # client_socket: A socket object that gives the socket of current thread
     # player_id: An integer that indicates which paddle a client is
+    # Pre: a thread is created
+    # Post: data is sent back and forth between server and client
 
     # Assign paddle sides based on player_id
     paddle_side = ""

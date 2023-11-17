@@ -24,6 +24,7 @@ Run the following line to install the required libraries for this project:
 
 Known Bugs
 ==========
-- The server doesn't work because the logic isn't yet written.
-- The client doesn't speak to the server
+- Every couple frames, the ball has fluctuations. 
+- There is a bit of a lag. 
+- The server produces a JSONDecodeError that we cannot seem to debug.
 
