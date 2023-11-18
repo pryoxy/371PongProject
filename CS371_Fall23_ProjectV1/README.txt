@@ -17,8 +17,9 @@ This file describes how to install/run your program and anything else you think 
 
 Install Instructions
 ====================
-
 Run the following line to install the required libraries for this project:
+
+Before you run the server, you have modify IP address it is bound to to your own IP address. Line 145 in pongServer.py
 
 `pip3 install -r requirements.txt`
 
